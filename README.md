@@ -34,4 +34,4 @@ El área de configuración del plugin se muestra una vez que le das click a inst
   - Test mode: Indica si el plugin será usado en ambiente de prueba.
   
 
-¡Listo! Ya tus clientes podrán pagar sus productos a través de PagoFlash.
+**¡Listo! Ya tus clientes podrán pagar sus productos a través de PagoFlash.**
