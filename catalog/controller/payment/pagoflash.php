@@ -151,7 +151,7 @@ class ControllerPaymentPagoflash extends Controller
     $this->load->model('setting/setting');
 
     // no se recibió la ficha de confirmación
-    if (false == isset($this->request->get['tk']))
+    if (false == isset($this->request->get['tk']) || false == isset($this->request->get['callback']))
     {
       // escribe la respuesta en el log
       $this->log->write("Pagoflash: no se recibió la ficha de confirmación");
@@ -173,13 +173,13 @@ class ControllerPaymentPagoflash extends Controller
     
     // establece los sub-elementos de la plantilla
     $this->children = array(
-			'common/column_left',
-			'common/column_right',
-			'common/content_top',
-			'common/content_bottom',
-			'common/footer',
-			'common/header'
-		);
+      'common/column_left',
+      'common/column_right',
+      'common/content_top',
+      'common/content_bottom',
+      'common/footer',
+      'common/header'
+    );
     
     // establece el texto a utilizar
     $this->data = array_merge($this->language->load('payment/pagoflash'), $this->data);
@@ -199,9 +199,9 @@ class ControllerPaymentPagoflash extends Controller
 
     // convierte la respuesta al formato JSON
     $v_respuesta_json = json_decode($v_respuesta);
-
+    
     // la ficha de confirmación no es válida
-    if ($v_respuesta_json->cod != '1')
+    if ($v_respuesta_json->cod != '1' && $v_respuesta_json->cod != '3')
     {
       // establece la plantilla a utilizar
       $this->template = "{$v_raiz_plantilla}/template/payment/pagoflash_failure.tpl";
@@ -212,9 +212,12 @@ class ControllerPaymentPagoflash extends Controller
       return;
     }
     
-    // confirma la orden de compra
-    $this->model_checkout_order->confirm($this->session->data['order_id'], $this->config->get('pagoflash_order_default_status'));
-    
+    if($v_respuesta_json->cod == '1')
+    {
+      // confirma la orden de compra
+      $this->model_checkout_order->confirm($v_respuesta_json->order_number, $this->config->get('pagoflash_order_default_status'));
+    }
+
     // limpia el carro de compras
     $this->cart->clear();
     

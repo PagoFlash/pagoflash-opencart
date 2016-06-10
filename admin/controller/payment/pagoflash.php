@@ -112,6 +112,7 @@ class ControllerPaymentPagoflash extends Controller
     $this->data = array_merge($this->language->load('common/header'), $this->data);
     $this->data['cancel'] = $this->url->link('extension/payment', 'token=' . $this->session->data['token'], 'SSL');
     $this->data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
+    $this->data['action'] = $this->url->link('payment/pagoflash', 'token=' . $this->session->data['token'], 'SSL');
 
     // establece la plantilla a utilizar
     $this->template = 'payment/pagoflash.tpl';
