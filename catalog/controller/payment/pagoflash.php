@@ -113,10 +113,15 @@ class ControllerPaymentPagoflash extends Controller
     $v_pagoflash = $this->instanciarApi();
 
     // hace la llamada a la plataforma mediante el API
+    $op_config = $this->model_setting_setting->getSetting('pagoflash');
     $v_respuesta = $v_pagoflash->procesarPago(
       array(
         'cabecera_de_compra' => $v_cabecera,
-        'productos_items' => $v_datos_productos
+        'productos_items' => $v_datos_productos,
+            "additional_parameters" => array(
+            "url_ok_redirect" =>$op_config['pagoflash_callback_url'], // en esta url le muestas a tu cliente que el pago fue exitoso
+            "url_ok_request" => $op_config['pagoflash_callback_url'] // en esta url debes verificar la transaccion
+        )
       ),
       $_SERVER['HTTP_USER_AGENT']
     );
